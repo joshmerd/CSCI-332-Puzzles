@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>h a r d  p u z z l e </title>
+
+<link rel="stylesheet" type="text/css" href="styles.css" />
+
+<script type="text/javascript">
+
+// ARRAY FOR PLACEMENT OF IMAGES: [down, over]
+var place = new Array([51,300],[51,366],[51,433],[51,502],[51,571],[51,640],[51,709],[51,778],
+            [81,300],[81,366],[81,433],[81,502],[81,571],[81,640],[81,709],[81,778],
+            [125,300],[125,366],[125,433],[125,502],[125,571],[125,640],[125,709],[125,778],
+            [169,300],[169,366],[169,433],[169,502],[169,571],[169,640],[169,709],[169,778],
+            [213,300],[213,366],[213,433],[213,502],[213,571],[213,640],[213,709],[213,778],
+            [256,300],[256,366],[256,433],[256,502],[256,571],[256,640],[256,709],[256,778],
+            [299,300],[299,366],[299,433],[299,502],[299,571],[299,640],[299,709],[299,778],
+            [343,300],[343,366],[343,433],[343,502],[343,571],[343,640],[343,709],[343,778]);
+
+var displayed = new Array();
+var mousePress = false;
+var pieces = place.length;
+var placed = new Array();
+
+var moveObject;
+
+function init() {
+	append = "";
+	for ( i=0; i<pieces; i++ )
+	{
+		append += '<div onDrag="return false;" unselectable=on id="puzzle" name="puzzle" class="puzzleMain"><img src="img/venice/img' + i + '.gif" onmousedown="mousePress=true;moveObject=' + i + ';if(document.all) {offsetX=window.event.offsetX;offsetY=window.event.offsetY;}" onmouseup="mousePress=false;doplace(' + i + ');"></div>';
+		displayed[i] = 0;
+		placed[i]=0;
+	}
+	document.getElementById("main").innerHTML += append;
+	document.images[i].onload = rndmImg;
+}
+
+function rndmImg() {
+	x=855;y=50;
+	do {
+		do {
+			displayNext = Math.floor( Math.random()* pieces );
+		} while( displayed[displayNext] );
+		document.getElementsByName("puzzle")[displayNext].style.top = y;
+		document.getElementsByName("puzzle")[displayNext].style.left = x;
+		document.getElementsByName("puzzle")[displayNext].style.visibility="visible";
+		displayed[displayNext]=1;
+		x += document.images[displayNext].width;
+		if( x >= 1024 ) {
+			y += document.images[displayNext].height;
+			if ( y>=370 ) { x=0 } else { x=851 }
+		}
+	} while(!allDisplayed());
+}
+
+function allDisplayed() {
+	for( z=0; z<displayed.length; z++ ) if( !displayed[z] ) return false;
+	return true;
+}
+
+function lower() {
+	for( p=0;p<document.getElementsByName("puzzle").length;p++ )
+	document.getElementsByName("puzzle")[p].style.zIndex = 1;
+	document.getElementsByName("puzzle")[moveObject].style.zIndex=5;
+}
+
+function initDrag(e) {
+	if(!mousePress)return;
+	if(document.getElementById("inside").innerHTML != "") document.getElementById("inside").innerHTML = "";
+	lower();
+	if(document.all) {
+		mouseX = event.clientX - (offsetX);
+		mouseY = event.clientY - (offsetY);
+	} else {
+		mouseX = e.clientX - 50;
+		mouseY = e.clientY - 50;
+	}
+	document.getElementsByName("puzzle")[moveObject].style.top=mouseY;
+	document.getElementsByName("puzzle")[moveObject].style.left=mouseX ;
+	return false;
+}
+
+function doplace(index) {
+	w = document.images[index].width;
+	h = document.images[index].height;
+	t = parseInt(document.getElementsByName("puzzle")[index].style.top);
+	l = parseInt(document.getElementsByName("puzzle")[index].style.left);
+
+	if ( ( l >= place[index][1]-(w/2) && l <= place[index][1]+(w/2) ) && ( t >= place[index][0]-(h/2) && t <= place[index][0] + (h/2) ) ) 
+	{
+		document.getElementsByName("puzzle")[index].style.top = place[index][0];
+		document.getElementsByName("puzzle")[index].style.left = place[index][1];
+		placed[index] = 1;
+		if(isComplete()) pText.innerHTML = "Puzzle is complete!";
+	}
+
+}
+
+function generateArray() 
+{
+	append="var place = new Array(";
+	for( i=0; i<document.getElementsByName("puzzle").length; i++ ) 
+	{
+		t = document.getElementsByName("puzzle")[i].style.pixelTop;
+		l = document.getElementsByName("puzzle")[i].style.pixelLeft;
+		append+="[" + t + "," + l + "],";
+	}
+	document.forms[0].mArray.value = append;
+}
+
+
+function isComplete() 
+{
+	for( q=0;q<placed.length;q++ ) if( !placed[q] )return false;
+	return true;
+}
+
+</script>
+
+
+</head>
+<body onload="init();" onmousemove="initDrag();" onmouseup="mousePress=false;">
+<div id="main">
+	<div id="inside">
+	<img src="holder.gif" style="position:absolute; left:500; top:500;" />
+	</div>
+</div>
+<div style="position:absolute;top:10px;left:600px;display:none;">
+</div>
+<p id="pText" class="congrats" style="position:absolute; top:400px; left:475px;"></p>
+<p style="position:absolute; top:20px; left:750px;" class="links"><a href="easy.html">easy puzzle</a> | <a href="main.html">home</a></p>
+</body>
+</html>
+
