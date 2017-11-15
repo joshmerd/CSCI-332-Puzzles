@@ -30,6 +30,7 @@ function init() {
 	document.images[i].onload = rndmImg;
 }
 
+// Randomly place images around board on page load.
 function rndmImg() {
 	x=855;y=50;
 	do {
@@ -48,6 +49,7 @@ function rndmImg() {
 	} while(!allDisplayed());
 }
 
+// This function checks to see if all the images have been displayed.
 function allDisplayed() {
 	for( z=0; z<displayed.length; z++ ) if( !displayed[z] ) return false;
 	return true;
@@ -59,6 +61,7 @@ function lower() {
 	document.getElementsByName("puzzle")[moveObject].style.zIndex=5;
 }
 
+// This function controls image dragging.
 function initDrag(e) {
 	if(!mousePress)return;
 	if( document.getElementById("inside").innerHTML != "" ) document.getElementById("inside").innerHTML = "";
@@ -104,7 +107,7 @@ function generateArray()
 	document.forms[0].mArray.value = append;
 }
 
-
+// This function returns true if all images have been placed on the board correctly.
 function isComplete() 
 {
 	for( q=0;q<placed.length;q++ ) if( !placed[q] )return false;
